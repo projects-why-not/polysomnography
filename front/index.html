@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Юлия Алымова" />
+    <meta name="color-scheme" content="dark light">
+    <link rel="icon" href="./images/icon3.png">
+    <link rel="stylesheet" href="./fonts/fonts.css">
+    <link rel="stylesheet" href="./styles/globals.css">
+    <link rel="stylesheet" href="./styles/variables.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/dark.css">
+    <link rel="stylesheet" href="./styles/light.css">
+    <title>DD-sleep</title>
+  </head>
+  <body class="page">
+    <header class="header">
+        <div class="head__place">
+            <div class="logo"></div>
+            <nav class="header__theme-menu">
+                <ul class="header__theme-menu-list">
+                <li class="header__theme-menu-item">
+                    <button
+                    class="header__theme-menu-button header__theme-menu-button_type_light"
+                    >
+                    Светло
+                    </button>
+                </li>
+                <li class="header__theme-menu-item">
+                    <button
+                    class="header__theme-menu-button header__theme-menu-button_active header__theme-menu-button_type_auto"
+                    disabled
+                    >
+                    Авто
+                    </button>
+                </li>
+                <li class="header__theme-menu-item">
+                    <button
+                    class="header__theme-menu-button header__theme-menu-button_type_dark"
+                    >
+                    Темно
+                    </button>
+                </li>
+                </ul>
+            </nav>
+        </div>     
+      
+    </header>
+    <main class="content">
+        <section class="section__info">
+            <p class="article__text">
+                Тут краткое описание: что загружать и зачем
+              </p>
+        </section>
+        <section class="section__form">
+            <form class="form">
+                <div class="input__place">
+                    <label for="file_inpute" class="label">Пожалуйста,</label>
+                    <input class="input" type="file" id="file_inpute" name="file_inpute" accept="image/png, image/jpeg">   
+                </div>
+                <button class="button">Загрузить</button>
+            </form> 
+        </section>
+      
+    </main>
+    <footer class="footer">
+      <p class="article__text">
+        dataDiagnosts
+      </p>
+      <p class="article__text">
+        2024
+      </p>
+    </footer>
+    <script src="./scripts/script.js"></script>
+  </body>
+</html>
