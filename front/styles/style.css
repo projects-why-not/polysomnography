@@ -11,7 +11,7 @@
 }
 
 .logo {
-  background-image: url(/images/icon3.png);
+  background-image: url(../images/icon3.png);
   background-size: contain;
   background-repeat: no-repeat;
   width: 100px;
