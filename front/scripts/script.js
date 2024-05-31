@@ -1,4 +1,10 @@
+// import {postFile} from './api'
+
+
+
 const themeButtons = document.querySelectorAll('.header__theme-menu-button');
+const inputButton = document.querySelector('.button')
+const input = document.querySelector('input[type="file"]')
 
 themeButtons.forEach((button) => {
   button.addEventListener('click', () => {
@@ -45,12 +51,59 @@ function initTheme() {
   }
 }
 
+// inputeButton.addEventListener('click', () => {
+//   postFile(input)
+//   .then(() => {
+//     console.log('Hi')
+//   })
+// })
+
 initTheme();
 
 
+const config = {
+    baseUrl: 'https://sleep.projectswhynot.site/upload',
+};
+
+
+function checkFetchResult (res) {
+    if (res.ok) {
+        return res.json();
+    } 
+    else {
+        Promise.reject(`Ошибка: ${res.status}`)
+    }
+}
+
+function postFile (input) {
+    return fetch(`${config.baseUrl}`, {
+        method: 'POST',
+        body: input.files[0]
+    })
+    .then((res) => {
+        return checkFetchResult(res)
+      })
+}
 
 
 
+
+
+inputButton.addEventListener('click', (evt) => {
+  evt.preventDefault(); 
+  postFile(input)
+  .then(() => {
+    console.log('Hi')
+  })
+})
+
+
+
+
+
+// window.addEventListener('load', function () {
+//   preloader.style.display = 'none';
+// });
 
 
 

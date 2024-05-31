@@ -1,17 +1,25 @@
-// const config = {
-//     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-13',
-    
-// };
+const config = {
+    baseUrl: 'https://sleep.projectswhynot.site//upload',
+};
 
-// function postNewCard (name, link) {
-//     return fetch(`${config.baseUrl}/cards`, {
-//         method: 'POST',
-//         body: JSON.stringify({
-//             name : name,
-//             link : link
-//         })
-//     })
-//     .then((res) => {
-//         return checkFetchResult(res)
-//     })
-// }
+
+function checkFetchResult (res) {
+    if (res.ok) {
+        return res.json();
+    } 
+    else {
+        Promise.reject(`Ошибка: ${res.status}`)
+    }
+}
+
+function postFile (input) {
+    return fetch(`${config.baseUrl}`, {
+        method: 'POST',
+        body: input.files[0]
+    })
+    .then((res) => {
+        return checkFetchResult(res)
+      })
+}
+
+export {postFile}

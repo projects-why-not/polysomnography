@@ -1,3 +1,14 @@
+.preloader {
+  width: 100vw;
+  height: 100vh;
+  background-color: red;
+  position: fixed;
+}
+
+.loaded {
+  background-color: transparent;
+}
+
 .page {
   background-color: var(--subtitle-color);
   background-position: center;

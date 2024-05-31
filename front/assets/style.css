@@ -1,0 +1,101 @@
+@font-face {
+  font-family: Raleway;
+  src:
+    url(./Raleway-Regular.woff2) format('woff2'),
+    url(./Raleway-Regular.woff) format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Raleway;
+  src:
+    url(./Raleway-Bold.woff2) format('woff2'),
+    url(./Raleway-Bold.woff) format('woff');
+  font-weight: bold;
+  font-display: swap;
+}
+
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  min-inline-size: 375px;
+  margin: 0 auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+picture {
+  margin: 0;
+  padding: 0;
+}
+
+button,
+a {
+  color: currentColor;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+
+
+
+.page {
+  
+  
+}
+
+.dash-graph {
+  width: 85%;
+}
+
+.title {
+  font-family: Raleway, sans-serif;
+  font-weight: normal;
+  font-size: 30px;
+  width: 85%;
+  text-align: center;
+  margin-inline: auto;
+  margin-block: 32px;
+
+}
+
+.modebar-btn {
+  display: none;
+}
+
+.preloader {
+  width: 100vw;
+  height: 100vh;
+  background-color: red;
+  position: fixed;
+}
+
+.loaded {
+  background-color: transparent;
+}
+
+._dash-loading {
+  display: none;
+}

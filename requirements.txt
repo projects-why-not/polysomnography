@@ -1,0 +1,6 @@
+uvicorn
+seaborn
+numpy
+dash
+plotly.express
+pandas
