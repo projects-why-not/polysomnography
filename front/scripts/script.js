@@ -6,10 +6,9 @@ const themeButtons = document.querySelectorAll('.header__theme-menu-button');
 const inputButton = document.querySelector('.button')
 const messageText = document.querySelector('.message')
 const input = document.querySelector('input[type="file"]')
-const formData = new FormData();
+
 const preloader = document.querySelector('.preloader')
 
-formData.append('data', input)
 
 themeButtons.forEach((button) => {
   button.addEventListener('click', () => {
@@ -73,17 +72,20 @@ const config = {
 
 function checkFetchResult (res) {
     if (res.ok) {
-        return res.json();
+        // return res.json();
     } 
     else {
         Promise.reject(`Ошибка: ${res.status}`)
     }
 }
 
+const formData = new FormData();
+formData.append('data', input.files[0])
+
 function postFile () {
-    return fetch(`${config.baseUrl}`, {
+    return fetch('https://sleep.projectswhynot.site/upload', {
         method: 'POST',
-        body: formData
+        body: input.files[0]
     })
     .then((res) => {
         return checkFetchResult(res)
@@ -100,6 +102,7 @@ inputButton.addEventListener('click', (evt) => {
   if (input.value !== ''){
     messageText.classList.remove('message_vis')
     preloader.classList.add('preloader_visible')
+    // console.log(input.files[0])
 
     postFile()
     // window.location.href = "http://stackoverflow.com";
