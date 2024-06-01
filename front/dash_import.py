@@ -1,85 +1,187 @@
-import random
-from datetime import datetime
-import numpy as np
 import pandas as pd
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+import random
 import plotly.graph_objects as go
-from dash import Dash, dcc, html, callback, Input ,Output, clientside_callback
-# from docx import Document
-# from docx.enum.text import WD_ALIGN_PARAGRAPH
-# from docx.oxml import OxmlElement
-# from docx.oxml.ns import qn
-# from docx2pdf import convert
-# def set_cell_border(cell, **kwargs):
-#     """
-#     Set cell's border
-#     Usage:
-#     set_cell_border(
-#         cell,
-#         top={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#         bottom={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#         left={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#         right={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#     )
-#     """
-#     tc = cell._element
-#     tcPr = tc.get_or_add_tcPr()
+from docx.shared import Inches
+import os
+from datetime import datetime
+from docx import Document
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
+from docx2pdf import convert
+from dash import Dash, dcc, html, callback, Input, Output, clientside_callback
 
-#     for border_name in ["top", "left", "bottom", "right"]:
-#         border = kwargs.get(border_name)
-#         if border:
-#             element = OxmlElement(f"w:{border_name}")
-#             for attr, value in border.items():
-#                 element.set(qn(f"w:{attr}"), str(value))
-#             tcPr.append(element)
+def set_cell_border(cell, **kwargs):
+    """
+    Set cell's border
+    Usage:
+    set_cell_border(
+        cell,
+        top={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+        bottom={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+        left={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+        right={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+    )
+    """
+    tc = cell._element
+    tcPr = tc.get_or_add_tcPr()
 
-# def create_polysomnography_report(template_data, output_word_path, output_pdf_path):
-#     # Create a new Document
-#     doc = Document()
+    for border_name in ["top", "left", "bottom", "right"]:
+        border = kwargs.get(border_name)
+        if border:
+            element = OxmlElement(f"w:{border_name}")
+            for attr, value in border.items():
+                element.set(qn(f"w:{attr}"), str(value))
+            tcPr.append(element)
 
-#     # Title
-#     title = doc.add_heading('Отчет для врача ... по полисомнографической записи ...', level=1)
-#     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+def auto_shablon_generator(episodes_df, duration, processing_time):
+    # Получение текущего времени и форматирование в строку
+    dir_path = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
-#     # Add technical report section
-#     doc.add_heading('Технический отчет', level=2)
-#     doc.add_paragraph(f'Проведен анализ ПСГ длительностью {template_data["duration"]} минут')
-#     doc.add_paragraph(f'Оценивались сигналы типа ЭЭГ')
-#     doc.add_paragraph(f'Время обработки составило {template_data["processing_time"]} секунд')
+    # Создание директории с именем текущего времени
+    os.makedirs(dir_path)
 
-#     # Add clinical report section
-#     doc.add_heading('Клинический отчет', level=2)
-#     doc.add_paragraph(f'По результатам анализа выявлено {template_data["breathing_disorder_presence"]} признаков нарушений дыхания во сне')
-#     doc.add_paragraph(f'За время ПСГ выявлено {template_data["breathing_disorder_episodes_count"]} эпизодов нарушения дыхания (НРД)')
+    # Paths for output files
+    output_word_path = dir_path + '/polysomnography_report.docx'
+    output_pdf_path = dir_path + '/polysomnography_report.pdf'
 
-#     # Add table
-#     table = doc.add_table(rows=1, cols=5)
-#     hdr_cells = table.rows[0].cells
-#     headers = ['№ эпизода НРД', 'Время начала регистрации эпизода НРД, с', 'Время завершения регистрации НРД, с', 'Длительность эпизода НРД, с', 'Тип эпизода НРД']
-#     for i, header in enumerate(headers):
-#         hdr_cells[i].text = header
-#         set_cell_border(hdr_cells[i], top={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#                                       bottom={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#                                       left={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#                                       right={"sz": 12, "val": "single", "color": "000000", "space": "0"})
+    doc = Document()
 
-#     for episode in template_data["episodes"]:
-#         row_cells = table.add_row().cells
-#         row_cells[0].text = str(episode["number"])
-#         row_cells[1].text = str(episode["start_time"])
-#         row_cells[2].text = str(episode["end_time"])
-#         row_cells[3].text = str(episode["duration"])
-#         row_cells[4].text = episode["type"]
-#         for cell in row_cells:
-#             set_cell_border(cell, top={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#                                   bottom={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#                                   left={"sz": 12, "val": "single", "color": "000000", "space": "0"},
-#                                   right={"sz": 12, "val": "single", "color": "000000", "space": "0"})
+    # Title
+    title = doc.add_heading('Отчет для врача ... по полисомнографической записи ...', level=1)
+    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-#     # Save the document
-#     doc.save(output_word_path)
+    # Add technical report section
+    doc.add_heading('Технический отчет', level=2)
+    doc.add_paragraph(f'Проведен анализ ПСГ длительностью {duration} минут')
+    doc.add_paragraph(f'Оценивались сигналы типа ЭЭГ')
+    doc.add_paragraph(f'Время обработки составило {processing_time} секунд')
 
-#     # Convert the document to PDF
-#     convert(output_word_path, output_pdf_path)
+    # Add clinical report section
+    doc.add_heading('Клинический отчет', level=2)
+
+    if episodes_df.empty:
+        breathing_disorder_presence = ''
+        doc.add_paragraph(f'По результатам анализа выявлено отсутствие признаков нарушений дыхания во сне')
+    else:
+        doc.add_paragraph(f'По результатам анализа выявлено наличие признаков нарушений дыхания во сне')
+        doc.add_paragraph(f'За время ПСГ выявлено {len(episodes_df)} эпизодов нарушения дыхания (НРД)')
+
+        # Add table
+        table = doc.add_table(rows=1, cols=5)
+        hdr_cells = table.rows[0].cells
+        headers = ['№ эпизода НРД', 'Время начала регистрации эпизода НРД, с', 'Время завершения регистрации НРД, с',
+                   'Длительность эпизода НРД, с', 'Тип эпизода НРД']
+        for i, header in enumerate(headers):
+            hdr_cells[i].text = header
+            set_cell_border(hdr_cells[i], top={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+                            bottom={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+                            left={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+                            right={"sz": 12, "val": "single", "color": "000000", "space": "0"})
+
+        for index, row in episodes_df.iterrows():
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(row["number"])
+            row_cells[1].text = str(row["start_time"])
+            row_cells[2].text = str(row["end_time"])
+            row_cells[3].text = str(row["duration"])
+            row_cells[4].text = row["type"]
+            for cell in row_cells:
+                set_cell_border(cell, top={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+                                bottom={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+                                left={"sz": 12, "val": "single", "color": "000000", "space": "0"},
+                                right={"sz": 12, "val": "single", "color": "000000", "space": "0"})
+
+        doc.add_heading('Характеристика длительности эпизодов нарушения дыхания', level=2)
+
+        # Длительность эпизода НРД, с
+        fig = go.Figure()
+        fig.add_trace(go.Box(y=episodes_df['duration']))
+        fig.update_xaxes(showticklabels=False)
+        fig.update_layout(template='plotly', title={
+            'text': "Длительность эпизода НРД, с",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+        }, )
+        fig.write_image(dir_path + '/image_graf.png')
+
+        doc.add_picture(dir_path + '/image_graf.png', width=Inches(6))
+
+        # Средняя длительность – […] секунд
+        doc.add_paragraph(f'Средняя длительность – {round(episodes_df['duration'].mean(), 2)} секунд')
+        # Медиана длительности НРД -- […] секунд
+        doc.add_paragraph(f'Медиана длительности НРД – {round(episodes_df['duration'].median(), 2)} секунд')
+        # Разброс длительности НРД -- от […] секунд до […] секунд
+        doc.add_paragraph(
+            f'Разброс длительности НРД - от {round(episodes_df['duration'].quantile(0.25), 2)} секунд до {round(episodes_df['duration'].quantile(0.75), 2)} секунд')
+        # round(float(mean_duration), 2), round(float(median_duration), 2), spread_duration
+
+        doc.add_heading('Анализ эпизодов нарушения дыхания в зависимости от времени регистрации', level=2)
+
+        # Количество разных типов апноэ за всю ночь
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=episodes_df[episodes_df["type"].str.contains("апноэ")]['type'].unique(),
+                             y=episodes_df[episodes_df["type"].str.contains("апноэ")]['type'].value_counts()))
+        fig.update_layout(template='plotly', title={
+            'text': "Количество разных типов апноэ за всю ночь",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+        }, )
+        fig.write_image(dir_path + '/image_graf1.png')
+
+        doc.add_picture(dir_path + '/image_graf1.png', width=Inches(6))
+
+        values_of_different_types_of_respiratory_disorders = episodes_df["type"].replace({
+            "центральное апноэ": "апноэ",
+            "обструктивное апноэ": "апноэ",
+            "апноэ": "апноэ",
+            "апноэ неопределенного типа": "апноэ"
+        })
+
+        # Количество разных типов нарушений дыхания
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=values_of_different_types_of_respiratory_disorders.unique(),
+                             y=values_of_different_types_of_respiratory_disorders.value_counts()))
+        fig.update_layout(template='plotly', title={
+            'text': "Количество разных типов нарушений дыхания",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+        }, )
+        fig.write_image(dir_path + '/image_graf2.png', scale=2)
+
+        doc.add_picture(dir_path + '/image_graf2.png', width=Inches(6))
+
+        # Распределение эпизодов НРД по первой, второй и последней третях ночного сна
+        fig = go.Figure()
+        fig.add_trace(go.Bar(x=['первая треть', 'вторая треть', 'последняя треть'],
+                             y=[len(episodes_df[episodes_df['start_time'] < duration / 3]),
+                                len(episodes_df[(episodes_df['start_time'] > duration / 3) & (
+                                            episodes_df['start_time'] < duration * 2 / 3)]),
+                                len(episodes_df[episodes_df['start_time'] > duration * 2 / 3])]))
+        fig.update_layout(template='plotly', title={
+            'text': "Распределение эпизодов НРД по третям ночного сна",
+            'y': 0.9,
+            'x': 0.5,
+            'xanchor': 'center',
+            'yanchor': 'top',
+        }, )
+        fig.write_image(dir_path + '/image_graf3.png', scale=2)
+
+        doc.add_picture(dir_path + '/image_graf3.png', width=Inches(6))
+
+    # Save the document
+    doc.save(output_word_path)
+
+    # Convert the document to PDF
+    convert(output_word_path, output_pdf_path)
+
+    return output_word_path, output_pdf_path
 
 def div_maker(fig):
     return html.Div(
@@ -124,8 +226,10 @@ def lower_plot_generator(data):
 
     return div_maker(fig)
 
-def start_dash(data_poly, data_gipno, hertz, processing_time, breathing_disorder_presence, path_word, path_pdf):
+def start_dash(data_poly, data_gipno, episodes, hertz, processing_time):
     data_poly, data_gipno, duration = data_preprocessing(data_poly, data_gipno, hertz)
+
+    path_word, path_pdf = auto_shablon_generator(episodes, duration, processing_time)
 
     app = Dash(__name__)
     app._favicon = "images/icon3.png"
@@ -163,15 +267,15 @@ def start_dash(data_poly, data_gipno, hertz, processing_time, breathing_disorder
         el.style.marginBottom = '32px'
         }
         })
-
-
+        
+        
         
         return window.dash_clientside.no_update
     }
     """,
     Output("test","id"),
     Input("test","id"),
-)
+    )
 
     app.run_server(debug=True)
 
@@ -191,14 +295,12 @@ def data_preprocessing(data_poly, data_gipno, hertz):
     return poly, data_gipno, duration
 
 if __name__ == "__main__":
+    #input
     data1 = pd.read_csv('full_data.csv')
     data2 = pd.read_csv('hypno.csv')
-    # input
     hertz = 200
-
     processing_time = random.randrange(5,15)
-    breathing_disorder_presence = 'наличие'
-    # episodes_data = pd.read_csv('episodes_data.csv')
-    start_dash(data1, data2, hertz, processing_time, breathing_disorder_presence, 'output_report.docx','output_report.pdf')
-
+    episodes_data = pd.read_csv('episodes.csv')
+    #func
+    start_dash(data1, data2, episodes_data, hertz, processing_time)
 
