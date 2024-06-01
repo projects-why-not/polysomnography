@@ -4,7 +4,12 @@
 
 const themeButtons = document.querySelectorAll('.header__theme-menu-button');
 const inputButton = document.querySelector('.button')
+const messageText = document.querySelector('.message')
 const input = document.querySelector('input[type="file"]')
+const formData = new FormData();
+const preloader = document.querySelector('.preloader')
+
+formData.append('data', input)
 
 themeButtons.forEach((button) => {
   button.addEventListener('click', () => {
@@ -75,10 +80,10 @@ function checkFetchResult (res) {
     }
 }
 
-function postFile (input) {
+function postFile () {
     return fetch(`${config.baseUrl}`, {
         method: 'POST',
-        body: input.files[0]
+        body: formData
     })
     .then((res) => {
         return checkFetchResult(res)
@@ -91,11 +96,23 @@ function postFile (input) {
 
 inputButton.addEventListener('click', (evt) => {
   evt.preventDefault(); 
-  postFile(input)
-  .then(() => {
-    console.log('Hi')
-  })
+  // console.log(input.value.lenght)
+  if (input.value !== ''){
+    messageText.classList.remove('message_vis')
+    preloader.classList.add('preloader_visible')
+
+    postFile()
+    // window.location.href = "http://stackoverflow.com";
+  } else {
+    messageText.classList.add('message_vis')
+
+  }
 })
+// })
+  // .then(() => {
+  //   console.log('Hi')
+  // })
+
 
 
 

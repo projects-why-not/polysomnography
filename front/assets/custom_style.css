@@ -1,0 +1,192 @@
+@font-face {
+  font-family: Raleway;
+  src:
+    url(./Raleway-Regular.woff2) format('woff2'),
+    url(./Raleway-Regular.woff) format('woff');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Raleway;
+  src:
+    url(./Raleway-Bold.woff2) format('woff2'),
+    url(./Raleway-Bold.woff) format('woff');
+  font-weight: bold;
+  font-display: swap;
+}
+
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  min-inline-size: 375px;
+  margin: 0 auto;
+  font-family: Raleway;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+picture {
+  margin: 0;
+  padding: 0;
+}
+
+button,
+a {
+  color: currentColor;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  text-decoration: none;
+}
+
+
+
+.dash-graph {
+  width: 85%;
+  height: 80vh;
+}
+
+.title {
+  font-family: Raleway, sans-serif;
+  font-weight: normal;
+  font-size: 30px;
+  width: 85%;
+  text-align: center;
+  margin-inline: auto;
+  margin-block-start: 32px;
+  position: relative;
+  z-index: 2;
+
+}
+
+.modebar-btn {
+  display: none;
+}
+
+.loaded {
+  background-color: transparent;
+}
+
+.report_place {
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  gap: 25px;
+  width: 85%;
+}
+
+.report_message {
+  text-align: center;
+  width: 100%;
+}
+
+.link__button {
+  border: solid gray 1px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 2px rgb(96, 96, 96);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: visibility 0s, background 0.3s;
+}
+
+.lower-plot__button {
+  margin-inline: auto;
+  width: 50%;
+  text-align: center;
+  margin-top: -32px;
+  z-index: 2;
+  position: relative;
+
+  border: solid gray 1px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 2px rgb(96, 96, 96);
+  height: 100%;
+  margin-block-end: 32px;
+  transition: visibility 0s, background 0.3s;
+}
+
+.lower-plot__button:hover {
+  background-color: rgba(207, 215, 225, 0.689);
+  cursor: pointer;
+
+}
+
+.lower-plot__button:active {
+  background-color: rgba(153, 181, 214, 0.689);
+}
+
+.upper_plot {
+  margin-top: -52px;
+}
+.lower_plot {
+  margin-top: -52px;
+  
+  display: none;
+}
+
+.lower_plot_visible {
+  display: block;
+}
+
+.link__button:hover {
+  background-color: rgba(207, 215, 225, 0.689);
+}
+
+.link__button:active {
+  background-color: rgba(153, 181, 214, 0.689);
+}
+
+.link__place {
+  width: 450px;
+  height: 54px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-inline: auto;
+  margin-bottom: 32px;
+}
+
+.download_button_lable {
+  padding-inline: 10px;
+}
+
+
+
+
+
+
+._dash-loading {
+  display: none;
+}
+
+.dash-debug-menu {
+  display: none !important;
+}
+
+.dash-debug-menu__outer {
+  display: none !important;
+}

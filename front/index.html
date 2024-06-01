@@ -51,16 +51,27 @@
     <main class="content">
         <section class="section__info">
             <p class="article__text">
-                Для проведения автоматического анализа полисомнограммы загрузите файл в формате .zip и нажмите на кнопку "Запустить", чтобы начать анализ
-              </p>
+                Система поддержки принятия решений для проведения автоматического анализа сна по данным ЭЭГ
+            </p>
+            <p class="article__text">
+              Для проведения анализа загрузите файл в формате .zip и нажмите на кнопку "Запустить"
+            </p>  
+            <p class="article__text">
+              файл должен содержать в себе данные одного пациента
+            </p> 
         </section>
         <section class="section__form">
-            <form class="form" >
+            <form class="form" enctype="multipart/form-data">
                 <div class="input__place">
                     <label for="file_inpute" class="label">Пожалуйста,</label>
-                    <input class="input" type="file" id="file_inpute" name="file_inpute" accept="image/png, image/jpeg">   
+                    <input class="input" type="file" id="file_inpute" name="file_inpute" accept=".zip,.rar,.7zip" >   
                 </div>
-                <button class="button">Запустить</button>
+                <button type="submit" class="button">Запустить</button>
+                <div class="message">необходимо выбрать файл</div>
+                <div class="preloader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                <div>Идет обработка. Страница обновится, когда результат будет готов</div>
+                </div>
+                
             </form> 
         </section>
       
