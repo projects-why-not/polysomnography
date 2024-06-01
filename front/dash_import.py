@@ -36,7 +36,7 @@ def set_cell_border(cell, **kwargs):
 
 def auto_shablon_generator(episodes_df, duration, processing_time):
     # Получение текущего времени и форматирование в строку
-    dir_path = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    dir_path = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
     # Создание директории с именем текущего времени
     os.makedirs(dir_path)
