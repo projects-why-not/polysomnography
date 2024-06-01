@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Юлия Алымова" />
+    <meta name="color-scheme" content="dark light">
+    <link rel="icon" href="./images/logo_dark.png">
+    <link rel="stylesheet" href="./fonts/fonts.css">
+    <link rel="stylesheet" href="./styles/globals.css">
+    <link rel="stylesheet" href="./styles/variables.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/dark.css">
+    <link rel="stylesheet" href="./styles/light.css">
+    <title>DD-sleep</title>
+  </head>
+  <body class="page">
+    <header class="header">
+        <div class="head__place">
+            <div class="logo"></div>
+            <nav class="header__theme-menu">
+                <ul class="header__theme-menu-list">
+                <li class="header__theme-menu-item">
+                    <button
+                    class="header__theme-menu-button header__theme-menu-button_type_light"
+                    >
+                    Светло
+                    </button>
+                </li>
+                <li class="header__theme-menu-item">
+                    <button
+                    class="header__theme-menu-button header__theme-menu-button_active header__theme-menu-button_type_auto"
+                    disabled
+                    >
+                    Авто
+                    </button>
+                </li>
+                <li class="header__theme-menu-item">
+                    <button
+                    class="header__theme-menu-button header__theme-menu-button_type_dark"
+                    >
+                    Темно
+                    </button>
+                </li>
+                </ul>
+            </nav>
+        </div>     
+      
+    </header>
+    <main class="content">
+        <!-- <section class="section__info">
+            <p class="article__text">
+              Система поддержки принятия решений для проведения автоматического анализа сна по данным ЭЭГ
+            </p>
+            <p class="article__text">
+              Для проведения анализа загрузите файл в формате .zip и нажмите на кнопку "Запустить"
+            </p>  
+            <p class="article__text">
+              файл должен содержать в себе данные одного пациента
+            </p> 
+        </section> -->
+        <section class="section__form">
+          <div class="preloader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+          <div class="time_text">Идет обработка. Страница обновится, когда результат будет готов</div> 
+        </section>
+      
+    </main>
+    <footer class="footer">
+      <div class="contacts">
+        <a class="contact__link" href="mailto:yumka2007@yandex.ru?subject=Sleep_СППВР">Связаться с разработчиками</a>
+      </div>
+      <div class="credits">
+        <p class="article__text credits_art">
+        dataDiagnosts
+        </p>
+        <p class="article__text credits_art">
+          2024
+        </p>
+      </div>
+    </footer>
+    <script type="module" src="./scripts/script.js"></script>
+    <script type="module" src="./scripts/api.js"></script>
+    <!-- <script type="module" src="./scripts/api.js"></script> -->
+  </body>
+</html>

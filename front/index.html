@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Юлия Алымова" />
     <meta name="color-scheme" content="dark light">
-    <link rel="icon" href="./images/icon3.png">
+    <link rel="icon" href="./images/logo_dark.png">
     <link rel="stylesheet" href="./fonts/fonts.css">
     <link rel="stylesheet" href="./styles/globals.css">
     <link rel="stylesheet" href="./styles/variables.css">
@@ -51,7 +51,7 @@
     <main class="content">
         <section class="section__info">
             <p class="article__text">
-                Система поддержки принятия решений для проведения автоматического анализа сна по данным ЭЭГ
+              Система поддержки принятия решений для проведения автоматического анализа сна по данным ЭЭГ
             </p>
             <p class="article__text">
               Для проведения анализа загрузите файл в формате .zip и нажмите на кнопку "Запустить"
@@ -61,15 +61,13 @@
             </p> 
         </section>
         <section class="section__form">
-            <form class="form" enctype='multipart/form-data'>
+            <form class="form" action="https://sleep.projectswhynot.site/upload" method="post" enctype='multipart/form-data'>
                 <div class="input__place">
                     <label for="file_inpute" class="label">Пожалуйста,</label>
                     <input class="input" type="file" id="file_inpute" name="file_inpute" accept=".zip,.rar,.7zip" >   
                 </div>
                 <button type="submit" class="button">Запустить</button>
                 <div class="message">необходимо выбрать файл</div>
-                <div class="preloader"><div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-                <div>Идет обработка. Страница обновится, когда результат будет готов</div>
                 </div>
                 
             </form> 
@@ -77,12 +75,17 @@
       
     </main>
     <footer class="footer">
-      <p class="article__text">
+      <div class="contacts">
+        <a class="contact__link" href="mailto:yumka2007@yandex.ru?subject=Sleep_СППВР">Связаться с разработчиками</a>
+      </div>
+      <div class="credits">
+        <p class="article__text credits_art">
         dataDiagnosts
-      </p>
-      <p class="article__text">
-        2024
-      </p>
+        </p>
+        <p class="article__text credits_art">
+          2024
+        </p>
+      </div>
     </footer>
     <script type="module" src="./scripts/script.js"></script>
     <!-- <script type="module" src="./scripts/api.js"></script> -->

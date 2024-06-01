@@ -96,21 +96,21 @@ function postFile () {
 
 
 
-inputButton.addEventListener('click', (evt) => {
-  evt.preventDefault(); 
-  // console.log(input.value.lenght)
-  if (input.value !== ''){
-    messageText.classList.remove('message_vis')
-    preloader.classList.add('preloader_visible')
-    // console.log(input.files[0])
+// inputButton.addEventListener('click', (evt) => {
+//   // evt.preventDefault(); 
+//   // console.log(input.value.lenght)
+//   if (input.value !== ''){
+//     messageText.classList.remove('message_vis')
+//     preloader.classList.add('preloader_visible')
+//     // console.log(input.files[0])
 
-    postFile()
-    // window.location.href = "http://stackoverflow.com";
-  } else {
-    messageText.classList.add('message_vis')
+//     // postFile()
+//     // window.location.href = "http://stackoverflow.com";
+//   } else {
+//     messageText.classList.add('message_vis')
 
-  }
-})
+//   }
+// })
 // })
   // .then(() => {
   //   console.log('Hi')

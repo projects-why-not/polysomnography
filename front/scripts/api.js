@@ -1,25 +1,12 @@
-const config = {
-    baseUrl: 'https://sleep.projectswhynot.site//upload',
-};
-
-
-function checkFetchResult (res) {
-    if (res.ok) {
-        return res.json();
-    } 
-    else {
-        Promise.reject(`Ошибка: ${res.status}`)
-    }
-}
-
-function postFile (input) {
-    return fetch(`${config.baseUrl}`, {
-        method: 'POST',
-        body: input.files[0]
+function waiter () {
+    return fetch('https://sleep.projectswhynot.site/upload', {
+        method: 'GET'
     })
     .then((res) => {
-        return checkFetchResult(res)
-      })
+        if (res.ok) {
+            window.location.href = "https://sleep.projectswhynot.site/results";
+        }
+    })
 }
 
-export {postFile}
+waiter()

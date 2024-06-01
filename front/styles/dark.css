@@ -8,11 +8,14 @@
   --text-color: #e1e6f1;
   --content-subtitle-color: var(--accent-color);
   --display-rec: flex;
+  --imgg: url(../images/logo_new.png)
 }
 
 .page.theme_dark {
   background-color: var(--subtitle-color);
 }
+/* .logo {
+  background-image: url(../images/logo_new.png);} */
 
 .rec {
   color: var(--button-color);
@@ -22,3 +25,4 @@
   background-color: var(--button-color);
   box-shadow: 0 0 4px 2px var(--button-color);
 }
+
