@@ -254,7 +254,7 @@ def start_dash(data_poly, data_gipno, episodes, hertz, processing_time):
     Input("test","id"),
     )
 
-    app.run_server(debug=True)
+    app.run_server(port=9857, debug=True)
 
 def data_preprocessing(data_poly, data_gipno, hertz):
     poly = pd.DataFrame()
@@ -273,11 +273,11 @@ def data_preprocessing(data_poly, data_gipno, hertz):
 
 if __name__ == "__main__":
     #input
-    data1 = pd.read_csv('full_data.csv')
-    data2 = pd.read_csv('hypno.csv')
+    data1 = pd.read_csv('../../full_data.csv')
+    data2 = pd.read_csv('../../hypno.csv')
     hertz = 200
     processing_time = random.randrange(5,15)
-    episodes_data = pd.read_csv('episodes.csv')
+    episodes_data = pd.read_csv('../../episodes.csv')
     #func
     start_dash(data1, data2, episodes_data, hertz, processing_time)
 
