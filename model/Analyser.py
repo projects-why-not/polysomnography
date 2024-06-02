@@ -12,7 +12,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as mse
 from sklearn.metrics import mean_absolute_error as mae
-from sklearn.metrics import root_mean_squared_error as rmse
+from sklearn.metrics import mean_squared_error as rmse
 from sklearn.metrics import mean_absolute_percentage_error as mape
 
 from scipy import signal
@@ -23,6 +23,7 @@ from statistics import mean, median
 
 
 class Analyser:
+    # Class attributes for storing paths, dataframes, and model-related information
     dir_path = None
     system = None
     model_path = None
@@ -50,6 +51,14 @@ class Analyser:
         system: str = None,
         default_scaler=MinMaxScaler(),
     ):
+        """
+        Инициализация анализатора.
+
+        :param path: Путь к данным.
+        :param pretrained_model_path: Путь к предобученной модели.
+        :param system: Операционная система ('win' или 'mac').
+        :param default_scaler: Масштабировщик по умолчанию (MinMaxScaler).
+        """
         self.dir_path = path
         self.system = system
         self.model_path = pretrained_model_path
@@ -57,6 +66,14 @@ class Analyser:
         self.dp = DataProcessor(path)
 
     def get_record(self, patient_id, record_id, addname="", columns=[]):
+        """
+        Получение записей полиграфии и гипнограммы пациента.
+
+        :param patient_id: ID пациента.
+        :param record_id: ID записи.
+        :param addname: Дополнительное имя для файла.
+        :param columns: Список столбцов для извлечения.
+        """
         if self.dir_path is None:
             if self.system == "win":
                 file_path = "C:\\Users\\TereschenkoAV3\\VSCodeProjects\\DFOHack\\Data"
@@ -67,16 +84,12 @@ class Analyser:
 
         result = []
         for type in ["poly", "hypno"]:
-
             raw = self.dp.fix_load_specific(file_path, patient_id, record_id)
-
             data = self.dp.get_data(raw, patient_id, record_id, type)
-
             df = self.dp.make_df(data)
-
             result.append(df)
 
-        self.df_polu, self.df_hypno = result[0], result[1]
+        self.df_poly, self.df_hypno = result[0], result[1]
 
     def prep_XX_yy(
         self,
@@ -87,6 +100,16 @@ class Analyser:
         step=200,
         shifts=[-30, -15, -5, 5, 15, 30],
     ):
+        """
+        Подготовка признаков и целевой переменной для модели.
+
+        :param df: DataFrame с данными.
+        :param used_columns: Используемые столбцы.
+        :param target: Целевая переменная.
+        :param window: Размер окна для скользящего среднего и медианы.
+        :param step: Шаг окна.
+        :param shifts: Список сдвигов для признаков.
+        """
         feat = df[used_columns][window::step]
         targ = df[target][window::step].reset_index().drop(columns="index")
         mean_feat = (
@@ -129,6 +152,15 @@ class Analyser:
         step=200,
         shifts=[-30, -15, -5, 5, 15, 30],
     ):
+        """
+        Подготовка данных для обучения и тестирования модели.
+
+        :param used_columns: Используемые столбцы.
+        :param target: Целевая переменная.
+        :param window: Размер окна для скользящего среднего и медианы.
+        :param step: Шаг окна.
+        :param shifts: Список сдвигов для признаков.
+        """
         feat = self.df_poly[used_columns][window::step]
         targ = self.df_poly[target][window::step].reset_index().drop(columns="index")
         mean_feat = (
@@ -164,6 +196,11 @@ class Analyser:
         self.X, self.y = XX.values, yy.values
 
     def split_scale(self, test_size=0.2):
+        """
+        Разделение данных на обучающую и тестовую выборки, и их масштабирование.
+
+        :param test_size: Размер тестовой выборки (доля).
+        """
         l = len(self.X)
         X_train, X_test, y_train, y_test = (
             self.X[: round(l * test_size)],
@@ -184,45 +221,50 @@ class Analyser:
         )
 
     def get_predictions(self):
+        """
+        Получение предсказаний модели на обучающей и тестовой выборках.
+        """
         m = CatBoostRegressor()
         m.load_model()
         self.y_train_pred = m.predict(self.X_train)
         self.y_test_pred = m.predict(self.X_test)
 
-    # Эта функция отрезает начальную и конечную части записи, где пациент ещё не спит
     def wake_coords(self, hyp):
+        """
+        Функция отрезает начальную и конечную части записи, где пациент ещё не спит.
+
+        :param hyp: Гипнограмма.
+        :return: Начало и конец фаз сна.
+        """
         i, j = 0, len(hyp)
-        # Цикл, по которому мы ищем начало первой фазы сна
         while (hyp[i] == 0) & (i != len(hyp) - 1):
             i += 1
-
-        # Цикл, по которому мы ищем конец последней фазы сна
         while (hyp[j - 1] == 0) & (j != 0):
             j -= 1
-        # Условие, нужное при проверке эпизодов среди сна (если вдруг пациент проснулся ночью, счётчик может сбиться)
         if j <= i:
             i, j = j, i
         return i, j
 
-    # Функция для расчёта амплитуд в окрестности заданной точки i
     def count_amplitudes(self, i, df, window_big, window_small, num_parts):
+        """
+        Расчёт амплитуд в окрестности заданной точки.
 
-        # Считаем максимальные и минимальные значения внутри маленького окошка
+        :param i: Точка на графике.
+        :param df: DataFrame с данными.
+        :param window_big: Размер большого окна.
+        :param window_small: Размер маленького окна.
+        :param num_parts: Количество частей для большого окна.
+        :return: Маленькая и большая амплитуды.
+        """
         small_max = max(df.Airflow[(i - window_small // 2) : (i + window_small // 2)])
         small_min = min(df.Airflow[(i - window_small // 2) : (i + window_small // 2)])
-        small_amplitude = abs(
-            small_max - small_min
-        )  # Считаем максимальную амплитуду внутри маленького окна
+        small_amplitude = abs(small_max - small_min)
 
-        # Инициализируем списки максимумов и минимумов большого окна
         part_big_max = []
         part_big_min = []
-        # Итерируемся по кусочкам большого окна слева и справа от маленького окна
         for j in range(num_parts // 2):
-            # Считаем размер кусочка большого окна
             part_size = (window_big - window_small) // num_parts
 
-            # Считаем максимальное значение внутри кусочка слева и справа (j-ого слева и j-ого справа)
             part_big_max_left = max(
                 df.Airflow[
                     (i - window_big // 2 + j * part_size) : (
@@ -240,7 +282,6 @@ class Analyser:
             part_big_max.append(part_big_max_left)
             part_big_max.append(part_big_max_right)
 
-            # Считаем минимальное значение внутри кусочка слева и справа (j-ого слева и j-ого справа)
             part_big_min_left = min(
                 df.Airflow[
                     (i - window_big // 2 + j * part_size) : (
@@ -258,55 +299,39 @@ class Analyser:
             part_big_min.append(part_big_min_left)
             part_big_min.append(part_big_min_right)
 
-        # Берём медианные значения по максимума и минимума по кусочкам
         big_max = median(part_big_max)
         big_min = median(part_big_min)
-        big_amplitude = abs(
-            big_max - big_min
-        )  # Считаем медианную амплитуду по большому окну
+        big_amplitude = abs(big_max - big_min)
 
         return small_amplitude, big_amplitude
 
-    # Основная большая функция для разметки эпизодов НДС в выбранном фрагменте
     def mark_episodes(self, df, hyp, big_window=60, small_window=4, num_parts=8):
         """
-        На вход подаётся:
+        Основная функция для разметки эпизодов НДС в выбранном фрагменте.
 
-        - df = датафрейм(или его срез),
-        - hyp = гипнограмма(или такой же её срез, как в датафрейме),
-        - big_window = размер большого окна оценки амплитуды,
-        - small_window = размер маленького окна оценки амплитуды,
-        - num_parts = количество кусочков большого окна, в которых мы будем считать амплитуды
-
-        В этой функции нам нужны каналы Airflow и SaO2
+        :param df: DataFrame с данными.
+        :param hyp: Гипнограмма.
+        :param big_window: Размер большого окна оценки амплитуды.
+        :param small_window: Размер маленького окна оценки амплитуды.
+        :param num_parts: Количество кусочков большого окна.
+        :return: Словарь с эпизодами апноэ и гипопноэ.
         """
-        # Переводим секунды в точки на графике
         window_big = 200 * big_window
         window_small = 200 * small_window
-        start, end = self.wake_coords(hyp)  # Вычисляем начало и конец отсчёта
+        start, end = self.wake_coords(hyp)
 
-        # Сохраняем для каждого эпизода начало и конец
         episode_s_e = {"apnoe": [], "hypapnoe": []}
+        episode_idx = {"apnoe": [], "hypapnoe": []}
 
-        episode_idx = {
-            "apnoe": [],
-            "hypapnoe": [],
-        }  # Сохраняем координаты эпизодов НДС (на всякий случай, если допрём до нового варианта модели)
-
-        # Инициализируем списки точек, в которых найдено апноэ или гипопноэ
         apnoe = []
         hypapnoe = []
-        # Движемся в цикле большим окном по списку (в середине большого окна маленькое окно)
         for i in range(
             start + window_big // 2, end - window_big // 2, window_small // 2
         ):
-
-            # Считаем амплитуды большого и маленького окна в координате i
             small_amplitude, big_amplitude = self.count_amplitudes(
                 i, df, window_big, window_small, num_parts
             )
 
-            # Считаем максимальное и минимальное значение сатурации со сдвигом вперёд по времени
             max_sat = max(
                 df.SaO2[
                     (i - window_big // 2 + small_window) : (
@@ -322,7 +347,6 @@ class Analyser:
                 ]
             )
 
-            # Задаём условия отнесения НДС к тому или иному типу
             if small_amplitude < big_amplitude * 0.1:
                 apnoe += range(i - window_small // 2, i + window_small // 2)
                 episode_idx["apnoe"].append(i)
@@ -330,7 +354,6 @@ class Analyser:
                 hypapnoe += range(i - window_small // 2, i + window_small // 2)
                 episode_idx["hypapnoe"].append(i)
             else:
-                # Если в точке i НДС не обнаружен, сохраняем в словарь координаты последнего НДС и обнуляем списки точек апноэ и гипопноэ
                 if apnoe:
                     episode_s_e["apnoe"].append((apnoe[0], apnoe[-1]))
                 elif hypapnoe:
@@ -340,6 +363,20 @@ class Analyser:
 
         return episode_s_e
 
-    def automark(self, patient_id, record_id, df, hyp, big_window=60, small_window=4, num_parts=8):
+    def automark(
+        self, patient_id, record_id, df, hyp, big_window=60, small_window=4, num_parts=8
+    ):
+        """
+        Автоматическая разметка эпизодов для заданного пациента и записи.
+
+        :param patient_id: ID пациента.
+        :param record_id: ID записи.
+        :param df: DataFrame с данными.
+        :param hyp: Гипнограмма.
+        :param big_window: Размер большого окна оценки амплитуды.
+        :param small_window: Размер маленького окна оценки амплитуды.
+        :param num_parts: Количество кусочков большого окна.
+        :return: Размеченные эпизоды.
+        """
         raw = self.dp.fix_load_specific(patient_id, record_id)
-        return 
+        return
