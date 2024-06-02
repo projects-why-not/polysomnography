@@ -4,7 +4,7 @@ import mne
 import json
 import os
 
-from DataProcessor import DataProcessor
+from .DataProcessor import DataProcessor
 
 from catboost import CatBoostRegressor
 
